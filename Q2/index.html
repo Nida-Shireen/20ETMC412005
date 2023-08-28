@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    
+
+    <title>Transit Schedule</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .search-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-form button {
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .result-item {
+            margin: 10px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Transit Schedule</h1>
+    </header>
+
+    <div class="container">
+        <div class="search-form">
+            <input type="text" placeholder="Enter destination or departure">
+            <button>Search</button>
+        </div>
+
+        <div class="results">
+            
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2023 Transit Schedule. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = 'http://20.244.56.144/train/auth/'; 
+
+            const searchForm = document.querySelector('.search-form');
+            const resultsContainer = document.querySelector('.results');
+
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const searchTerm = document.querySelector('input[type="text"]').value;
+
+                fetch(`${apiUrl}/search?term=${searchTerm}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsContainer.innerHTML = ''; 
+
+                        data.trains.forEach(train => {
+                            const resultItem = document.createElement('div');
+                            resultItem.classList.add('result-item');
+                            resultItem.innerHTML = `
+                                <h2>${train.name}</h2>
+                                <p>Departure: ${train.departureTime}</p>
+                                <p>Arrival: ${train.arrivalTime}</p>
+                                <p>Price: $${train.price}</p>
+                                <button>Book Now</button>
+                            `;
+                            resultsContainer.appendChild(resultItem);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html>
